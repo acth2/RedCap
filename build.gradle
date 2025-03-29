@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'fr.acth2.redcap'
 version = '1.0.1-SNAPSHOT'
+
+application {
+    mainClass = 'fr.acth2.redcap.Wrapper'
+}
 
 repositories {
     mavenCentral()
@@ -13,6 +18,20 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     implementation 'com.formdev:flatlaf:3.5.4'
     testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'fr.acth2.redcap.Wrapper',
+                'Implementation-Title': 'RedCap',
+                'Implementation-Version': version
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 test {
