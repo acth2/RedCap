@@ -62,18 +62,15 @@ public class MainBackgroundPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // Paint background
         g.setColor(currentBgColor);
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // Create or update back buffer if needed
         if (backBuffer == null ||
                 backBuffer.getWidth() != getWidth() ||
                 backBuffer.getHeight() != getHeight()) {
             createBackBuffer();
         }
 
-        // Draw back buffer
         if (backBuffer != null) {
             g.drawImage(backBuffer, 0, 0, this);
         }
