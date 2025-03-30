@@ -2,6 +2,7 @@ package fr.acth2.redcap.application.firstlog;
 
 import fr.acth2.redcap.effects.MainBackgroundPanel;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,7 +12,7 @@ import static fr.acth2.redcap.log.Logger.*;
 
 public class FirstLogFrame extends JFrame {
     private JLabel welcomeLabel;
-    private JButton nextButton;
+    private RoundedButton nextButton;
     private MainBackgroundPanel backgroundPanel;
     private Point mouseDownCompCoords;
     private static final int CORNER_RADIUS = 20;
@@ -31,6 +32,8 @@ public class FirstLogFrame extends JFrame {
     private Color targetButtonBg;
     private Color currentButtonBorder;
     private Color targetButtonBorder;
+    private Color currentButtonHover;
+    private Color currentButtonClick;
 
     public FirstLogFrame(int starterTheme) {
         super("Introduction");
@@ -72,7 +75,6 @@ public class FirstLogFrame extends JFrame {
         ));
     }
 
-
     private void createUIComponents() {
         log("Loading FirstLogFrame UI Components");
 
@@ -80,6 +82,8 @@ public class FirstLogFrame extends JFrame {
         targetButtonBg = currentButtonBg;
         currentButtonBorder = new Color(10, 40, 10);
         targetButtonBorder = currentButtonBorder;
+        currentButtonHover = new Color(20, 60, 20);
+        currentButtonClick = new Color(15, 45, 15);
 
         switch (activeTheme) {
             case 1:
@@ -87,12 +91,16 @@ public class FirstLogFrame extends JFrame {
                 targetButtonBg = currentButtonBg;
                 currentButtonBorder = new Color(10, 10, 40);
                 targetButtonBorder = currentButtonBorder;
+                currentButtonHover = new Color(20, 20, 60);
+                currentButtonClick = new Color(15, 15, 45);
                 break;
             case 3:
                 currentButtonBg = new Color(30, 10, 10);
                 targetButtonBg = currentButtonBg;
                 currentButtonBorder = new Color(40, 10, 10);
                 targetButtonBorder = currentButtonBorder;
+                currentButtonHover = new Color(60, 20, 20);
+                currentButtonClick = new Color(45, 15, 15);
                 break;
         }
 
@@ -142,12 +150,82 @@ public class FirstLogFrame extends JFrame {
         welcomeLabel.setForeground(Color.WHITE);
         welcomeLabel.setBorder(BorderFactory.createEmptyBorder(60, 0, 0, 0));
 
-        nextButton = new JButton("NEXT");
+        nextButton = new RoundedButton("NEXT");
         nextButton.setFont(new Font("Segoe UI", Font.BOLD, 22));
         nextButton.setPreferredSize(new Dimension(300, 80));
-        updateButtonColors();
         nextButton.setForeground(Color.WHITE);
         nextButton.setFocusPainted(false);
+        updateButtonColors();
+    }
+
+    private class RoundedButton extends JButton {
+        private boolean hover = false;
+        private boolean pressed = false;
+
+        public RoundedButton(String text) {
+            super(text);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setOpaque(false);
+
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    hover = true;
+                    repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    hover = false;
+                    pressed = false;
+                    repaint();
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    pressed = true;
+                    repaint();
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    pressed = false;
+                    repaint();
+                }
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            Color bg = pressed ? currentButtonClick :
+                    hover ? currentButtonHover : currentButtonBg;
+            g2.setColor(bg);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), CORNER_RADIUS, CORNER_RADIUS);
+
+            g2.setColor(currentButtonBorder);
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, CORNER_RADIUS, CORNER_RADIUS);
+
+            g2.setColor(getForeground());
+            FontMetrics fm = g2.getFontMetrics();
+            Rectangle r = fm.getStringBounds(getText(), g2).getBounds();
+            int x = (getWidth() - r.width) / 2;
+            int y = (getHeight() - r.height) / 2 + fm.getAscent();
+            g2.drawString(getText(), x, y);
+
+            g2.dispose();
+        }
+    }
+
+    private Border createRoundedBorder(Color color, int thickness, int radius) {
+        return BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color, thickness),
+                BorderFactory.createEmptyBorder(15, 30, 15, 30)
+        );
     }
 
     private void setupUI() {
@@ -351,11 +429,21 @@ public class FirstLogFrame extends JFrame {
     }
 
     private void updateButtonColors() {
-        nextButton.setBackground(currentButtonBg);
-        nextButton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(currentButtonBorder, 2),
-                BorderFactory.createEmptyBorder(15, 30, 15, 30)
-        ));
+        switch (activeTheme) {
+            case 1:
+                currentButtonHover = new Color(20, 20, 60);
+                currentButtonClick = new Color(15, 15, 45);
+                break;
+            case 2:
+                currentButtonHover = new Color(20, 60, 20);
+                currentButtonClick = new Color(15, 45, 15);
+                break;
+            case 3:
+                currentButtonHover = new Color(60, 20, 20);
+                currentButtonClick = new Color(45, 15, 15);
+                break;
+        }
+        nextButton.repaint();
     }
 
     private Color interpolateColor(Color start, Color end, float progress) {
@@ -369,26 +457,15 @@ public class FirstLogFrame extends JFrame {
         switch (activeTheme) {
             case 1:
                 nextButton.setBackground(new Color(10, 10, 30));
-                nextButton.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(10, 10, 40), 2),
-                        BorderFactory.createEmptyBorder(15, 30, 15, 30)
-                ));
                 break;
             case 2:
                 nextButton.setBackground(new Color(10, 30, 10));
-                nextButton.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(10, 40, 10), 2),
-                        BorderFactory.createEmptyBorder(15, 30, 15, 30)
-                ));
                 break;
             case 3:
                 nextButton.setBackground(new Color(30, 10, 10));
-                nextButton.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(40, 10, 10), 2),
-                        BorderFactory.createEmptyBorder(15, 30, 15, 30)
-                ));
                 break;
         }
+        nextButton.repaint();
     }
 
     @Override

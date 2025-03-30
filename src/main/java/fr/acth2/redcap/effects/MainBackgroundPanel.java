@@ -45,7 +45,6 @@ public class MainBackgroundPanel extends JPanel {
     private Color getColorForTheme(int colorCode) {
         switch (colorCode) {
             case 1: return new Color(10, 10, 20);
-            case 2: return new Color(10, 20, 10);
             case 3: return new Color(20, 10, 10);
             default: return new Color(10, 20, 10);
         }
@@ -54,7 +53,6 @@ public class MainBackgroundPanel extends JPanel {
     private Color getBallColorForTheme(int colorCode) {
         switch (colorCode) {
             case 1: return new Color(50, 50, 255);
-            case 2: return new Color(50, 255, 50);
             case 3: return new Color(255, 50, 50);
             default: return new Color(50, 255, 50);
         }
