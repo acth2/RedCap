@@ -27,6 +27,8 @@ public class Wrapper {
         if (new File(System.getProperty("user.home") + "\\.redcap\\firstBooted").exists()) {
             References.startUIFromId(1);
         } else {
+            log("firstBooted file not found! Loading first boot payload");
+            log("Setting FlatDarkLaf as default theme");
             UIManager.setLookAndFeel(new FlatDarkLaf());
             References.startUIFromId(0);
         }
