@@ -19,7 +19,7 @@ public class Logger {
     private static void checkLogFileSize() {
         File logFile = new File(LOG_FILE);
         if (logFile.length() > 1024 * 2048) {
-            String backupFile = LOG_DIR + "/a2wm_" + System.currentTimeMillis() + ".log";
+            String backupFile = LOG_DIR + "/redcap_" + System.currentTimeMillis() + ".log";
             logFile.renameTo(new File(backupFile));
             log("Backuping a log file into " + backupFile);
         }
