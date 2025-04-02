@@ -4,6 +4,8 @@ import fr.acth2.redcap.effects.MainBackgroundPanel;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
@@ -34,6 +36,7 @@ public class FirstLogFrame extends JFrame {
     private Color targetButtonBorder;
     private Color currentButtonHover;
     private Color currentButtonClick;
+    private JPanel centerPanel;
 
     public FirstLogFrame(int starterTheme) {
         super("Introduction");
@@ -155,6 +158,13 @@ public class FirstLogFrame extends JFrame {
         nextButton.setPreferredSize(new Dimension(300, 80));
         nextButton.setForeground(Color.WHITE);
         nextButton.setFocusPainted(false);
+
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                centerPanel.setVisible(false);
+            }
+        });
         updateButtonColors();
     }
 
@@ -209,6 +219,7 @@ public class FirstLogFrame extends JFrame {
             g2.setColor(currentButtonBorder);
             g2.setStroke(new BasicStroke(2));
             g2.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, CORNER_RADIUS, CORNER_RADIUS);
+
 
             g2.setColor(getForeground());
             FontMetrics fm = g2.getFontMetrics();
@@ -315,6 +326,7 @@ public class FirstLogFrame extends JFrame {
 
         log("Setting up FirstLogFrame UI");
         JPanel centerPanel = new JPanel(new GridBagLayout());
+        this.centerPanel = centerPanel;
         centerPanel.setOpaque(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
