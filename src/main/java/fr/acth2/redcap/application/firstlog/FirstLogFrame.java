@@ -326,7 +326,6 @@ public class FirstLogFrame extends JFrame {
         navNextButton.setVisible(true);
         navNextButton.addActionListener(e -> {
             showNextCategory();
-            createLeftSeparator();
         });
 
         JPanel buttonContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0)) {
